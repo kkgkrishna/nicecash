@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaUserCircle } from "react-icons/fa";
 import { MdQrCodeScanner } from "react-icons/md";
 import { Utils } from "../Utils/Utils";
+import Button from "../CustomPage/Button";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { PiHandDeposit, PiHandWithdraw } from "react-icons/pi";
 
 function OrderPage() {
   const [orderData, setOrderData] = useState();
+  const [showBalance, setShowBalance] = useState(true);
+
+  const totalBalence = localStorage.getItem("totalBalence");
 
   useEffect(() => {
     setOrderData(Utils?.getLastNDays(20));
@@ -45,9 +51,69 @@ function OrderPage() {
         </div>
       </div>
 
+      <div className="bg-gray-900 p-4 rounded-lg mb-4">
+        <h2 className="text-sm text-gray-400 mb-5">Total Earning</h2>
+
+        <div className="flex items-center justify-between gap-5 mt-2 ">
+          <p className="text-3xl font-semibold">
+            {showBalance ? `₹ ${Number(totalBalence).toFixed(2)}` : "₹ *****"}
+          </p>
+
+          <button
+            onClick={() => setShowBalance(!showBalance)}
+            className="text-xl"
+          >
+            {showBalance ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </button>
+        </div>
+        <p className="text-gray-500">0.00000000 BTC</p>
+        <div className="flex gap-3 mt-4">
+          <Button
+            hasIcon
+            label={`Withdraw`}
+            className={`text-xs text-primaryColor border-primaryColor `}
+          >
+            <PiHandDeposit className={`text-primaryColor `} />
+          </Button>
+
+          <Button
+            hasIcon
+            label={`Deposit`}
+            className={`text-xs text-primaryColor border-primaryColor `}
+          >
+            <PiHandWithdraw className={`text-primaryColor `} />
+          </Button>
+        </div>
+      </div>
+
       {/* Holdings Section */}
+      <div className="bg-gray-900 p-4 rounded-lg mb-5">
+        <h2 className="text-sm text-gray-400">Holdings</h2>
+        <div className="flex justify-between items-center mt-2 border-b border-gray-700 pb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+            <span>Available Balance</span>
+          </div>
+          <div className="text-end">
+            <p className="text-sm">₹0.00</p>
+            <p className="text-xsm">0.00000000 BTC</p>
+          </div>
+        </div>
+        <div className="flex justify-between items-center mt-2">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+            <span>Pending & In Orders</span>
+          </div>
+          <div className="text-end">
+            <p className="text-sm">₹0.00</p>
+            <p className="text-xsm">0.00000000 BTC</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Date wise earning Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-16">
-        <h2 className="text-sm text-gray-400 mb-5">Your Earning</h2>
+        <h2 className="text-sm text-gray-400 mb-5">Date Wise Earning</h2>
         {EarningArray?.map((data, index) => (
           <div
             key={index}
