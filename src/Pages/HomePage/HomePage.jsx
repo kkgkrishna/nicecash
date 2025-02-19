@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
-import { IoHammer, IoHome, IoWallet } from "react-icons/io5";
+import { IoHome, IoWallet } from "react-icons/io5";
 import ProfilePage from "../ProfilePage/ProfilePage";
 import DashboardPage from "../DashboardPage/DashboardPage";
 import SettingsPage from "../SettingsPage/SettingsPage";
-import OrderPage from "../OrderPage/OrderPage";
 import WalletPage from "../WalletPage/WalletPage";
+import RevenuePage from "../RevenuePage/RevenuePage";
 
 function HomePage() {
   const [tabName, setTabName] = useState("dashboard");
@@ -28,16 +28,16 @@ function HomePage() {
             tabName === "settings" ? "text-yellow-500" : "text-gray-400"
           }`}
         /> */}
-        <FaShoppingCart
-          onClick={() => setTabName("order")}
+        {/* <FaShoppingCart
+          onClick={() => setTabName("revenue")}
           className={`${
-            tabName === "order" ? "text-yellow-500" : "text-gray-400"
+            tabName === "revenue" ? "text-yellow-500" : "text-gray-400"
           }`}
-        />
+        /> */}
         <IoWallet
-          onClick={() => setTabName("wallet")}
+          onClick={() => setTabName("revenue")}
           className={`${
-            tabName === "wallet" ? "text-yellow-500" : "text-gray-400"
+            tabName === "revenue" ? "text-yellow-500" : "text-gray-400"
           }`}
         />
         <FaUserCircle
@@ -51,7 +51,7 @@ function HomePage() {
       {/* Render Pages Based on Selected Tab */}
       {tabName === "dashboard" && <DashboardPage />}
       {tabName === "settings" && <SettingsPage />}
-      {tabName === "order" && <OrderPage />}
+      {tabName === "revenue" && <RevenuePage />}
       {tabName === "wallet" && <WalletPage />}
       {tabName === "profile" && <ProfilePage />}
     </>

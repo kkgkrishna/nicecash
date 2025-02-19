@@ -6,7 +6,7 @@ import Button from "../CustomPage/Button";
 import { PiHandDeposit, PiHandWithdraw } from "react-icons/pi";
 
 function DashboardPage() {
-  const [btc, setBtc] = useState(0.00015533);
+  const [btc, setBtc] = useState(0.00020150);
   const [currentBtcRate, setCurrentBtcRate] = useState(null);
   const [afterCommissionBtcRate, setAfterCommissionBtcRate] = useState(null);
   const [commissionRate, setCommissionRate] = useState(null);
@@ -60,7 +60,7 @@ function DashboardPage() {
   useEffect(() => {
     if (currentBtcRate !== null) {
       const btcInr = btc * currentBtcRate;
-      const commissionRate1 = btcInr * 0.1;
+      const commissionRate1 = btcInr * 0.15;
       setCommissionRate(commissionRate1);
       const total = btcInr - commissionRate1;
       setAfterCommissionBtcRate(total);
@@ -160,7 +160,7 @@ function DashboardPage() {
             </p>
           </div>
           <div className="flex justify-between">
-            <p>After Commission BTC Rate (10%)</p>
+            <p>After Commission BTC Rate (15%)</p>
             <p>₹ {commissionRate?.toFixed(2)}</p>
           </div>
         </div>

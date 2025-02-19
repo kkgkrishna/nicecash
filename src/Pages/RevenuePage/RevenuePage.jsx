@@ -6,17 +6,17 @@ import Button from "../CustomPage/Button";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { PiHandDeposit, PiHandWithdraw } from "react-icons/pi";
 
-function OrderPage() {
-  const [orderData, setOrderData] = useState();
+function RevenuePage() {
+  const [revenueData, setRevenueData] = useState();
   const [showBalance, setShowBalance] = useState(true);
 
   const totalBalence = localStorage.getItem("totalBalence");
 
   useEffect(() => {
-    setOrderData(Utils?.getLastNDays(20));
+    setRevenueData(Utils?.getLastNDays(20));
   }, []);
 
-  console.log(orderData);
+  // console.log(revenueData);
 
   const EarningArray = [
     { date: "17-Feb-2025", rupee: "1218", btc: "0.000067" },
@@ -44,76 +44,69 @@ function OrderPage() {
     <div className="bg-black text-white min-h-screen p-4">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Orders</h1>
+        <h1 className="text-2xl font-bold">Revenue</h1>
         <div className="flex items-center gap-4">
           <FaCog className="text-gray-400 text-xl" />
           <MdQrCodeScanner className="text-yellow-500 text-xl" />
         </div>
       </div>
 
-      <div className="bg-gray-900 p-4 rounded-lg mb-4">
-        <h2 className="text-sm text-gray-400 mb-5">Total Earning</h2>
+      <div className="bg-gray-900 p-6 rounded-lg mb-4 text-white">
+        <div className="grid grid-cols-2 gap-6 text-center">
+          {/* Total Income */}
 
-        <div className="flex items-center justify-between gap-5 mt-2 ">
-          <p className="text-3xl font-semibold">
-            {showBalance ? `₹ ${Number(totalBalence).toFixed(2)}` : "₹ *****"}
-          </p>
+          <div className="flex flex-col">
+            <p className="text-base mb-2 text-gray-400">Total Income</p>
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold">₹ 0.00</p>
+              <p className="text-sm">0.000000 BTC</p>
+            </div>
+          </div>
 
-          <button
-            onClick={() => setShowBalance(!showBalance)}
-            className="text-xl"
-          >
-            {showBalance ? <AiFillEyeInvisible /> : <AiFillEye />}
+          {/* Total Payout */}
+          <div className="flex flex-col">
+            <p className="text-base mb-2 text-gray-400">Total Payout</p>
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold">₹ 0.00</p>
+              <p className="text-sm">0.000000 BTC</p>
+            </div>
+          </div>
+
+          {/* Balance */}
+          <div className="flex flex-col">
+            <p className="text-base mb-2 text-gray-400">Yesterday Revenue</p>
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold">₹ 0.00</p>
+              <p className="text-sm">0.000000 BTC</p>
+            </div>
+          </div>
+
+          {/* Today's Estimated Revenue */}
+
+          <div className="flex flex-col">
+            <p className="text-base mb-2 text-gray-400">Today's Est. Revenue</p>
+            <div className="flex flex-col">
+              <p className="text-xl font-semibold">₹ 0.00</p>
+              <p className="text-sm">0.000000 BTC</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Withdraw & Deposit Buttons */}
+        {/* <div className="flex gap-3 mt-4 justify-center">
+          <button className="text-sm text-primaryColor border border-primaryColor px-3 py-1 rounded-md flex items-center gap-2">
+            <PiHandWithdraw className="text-primaryColor" /> Withdraw
           </button>
-        </div>
-        <p className="text-gray-500">0.00000000 BTC</p>
-        <div className="flex gap-3 mt-4">
-          <Button
-            hasIcon
-            label={`Withdraw`}
-            className={`text-xs text-primaryColor border-primaryColor `}
-          >
-            <PiHandDeposit className={`text-primaryColor `} />
-          </Button>
 
-          <Button
-            hasIcon
-            label={`Deposit`}
-            className={`text-xs text-primaryColor border-primaryColor `}
-          >
-            <PiHandWithdraw className={`text-primaryColor `} />
-          </Button>
-        </div>
-      </div>
-
-      {/* Holdings Section */}
-      <div className="bg-gray-900 p-4 rounded-lg mb-5">
-        <h2 className="text-sm text-gray-400">Holdings</h2>
-        <div className="flex justify-between items-center mt-2 border-b border-gray-700 pb-2">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-            <span>Available Balance</span>
-          </div>
-          <div className="text-end">
-            <p className="text-sm">₹0.00</p>
-            <p className="text-xsm">0.00000000 BTC</p>
-          </div>
-        </div>
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-            <span>Pending & In Orders</span>
-          </div>
-          <div className="text-end">
-            <p className="text-sm">₹0.00</p>
-            <p className="text-xsm">0.00000000 BTC</p>
-          </div>
-        </div>
+          <button className="text-sm text-primaryColor border border-primaryColor px-3 py-1 rounded-md flex items-center gap-2">
+            <PiHandDeposit className="text-primaryColor" /> Deposit
+          </button>
+        </div> */}
       </div>
 
       {/* Date wise earning Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-16">
-        <h2 className="text-sm text-gray-400 mb-5">Date Wise Earning</h2>
+        <h2 className="text-base  text-gray-400 mb-5">Date Wise Earning</h2>
         {EarningArray?.map((data, index) => (
           <div
             key={index}
@@ -123,10 +116,14 @@ function OrderPage() {
           >
             <div className="flex flex-col  ">
               {/* <div className="w-4 h-4 bg-green-500 rounded-full"></div> */}
-              <span className="text-lg">
+              {/* <span className="text-lg">
                 {Utils?.getLast10DaysFromDate(data?.date)?.[0]?.date}
               </span>
-              <span className="text-xs">
+              <span className="text-sm">
+                ({Utils?.getLast10DaysFromDate(data?.date)?.[0]?.day})
+              </span> */}
+              <span className="text-lg">{data?.date}</span>
+              <span className="text-sm">
                 ({Utils?.getLast10DaysFromDate(data?.date)?.[0]?.day})
               </span>
             </div>
@@ -137,8 +134,10 @@ function OrderPage() {
           </div>
         ))}
       </div>
+
+     
     </div>
   );
 }
 
-export default OrderPage;
+export default RevenuePage;
