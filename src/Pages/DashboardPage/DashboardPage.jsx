@@ -6,7 +6,7 @@ import Button from "../CustomPage/Button";
 import { PiHandDeposit, PiHandWithdraw } from "react-icons/pi";
 
 function DashboardPage() {
-  const [btc, setBtc] = useState(0.00020150);
+  const [btc, setBtc] = useState(0.00025544);
   const [currentBtcRate, setCurrentBtcRate] = useState(null);
   const [afterCommissionBtcRate, setAfterCommissionBtcRate] = useState(null);
   const [commissionRate, setCommissionRate] = useState(null);
