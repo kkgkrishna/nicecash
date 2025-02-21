@@ -5,14 +5,14 @@ const GetData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const username = "anup2002"; // Replace with your F2Pool username
+  const username = "xyz"; // Replace with your F2Pool username
   const currency = "bitcoin"; // Change to your mining currency (e.g., ethereum)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `https://api.f2pool.com/${currency}/${username}`
+          `http://172.105.61.179:4545/getAccountStatus/anup2002/3vg7054aiq5kyixe1uwzxr0nuw42ftmcmqcqaiw618n6co2wq4k1fz31x32uk0kg`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");

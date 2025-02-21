@@ -42,7 +42,7 @@ export const Utils = {
     return days;
   },
 
-  getLast10DaysFromDate(inputDate) {
+  getLast10DaysFromDate(inputDate = new Date().toISOString()) {
     const days = [];
     const options = { weekday: "long" };
     const monthNames = [
@@ -60,7 +60,13 @@ export const Utils = {
       "Dec",
     ];
 
+    // Parse input date correctly
     const baseDate = new Date(inputDate);
+    if (isNaN(baseDate)) {
+      console.error("Invalid date format");
+      return [];
+    }
+
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
@@ -84,5 +90,29 @@ export const Utils = {
     }
 
     return days;
+  },
+
+  convertBtcToInr(btc, currentRate) {
+    if (!btc || !currentRate)
+      return { original: "₹0.00", fee: "₹0.00", afterFee: "₹0.00" };
+
+    const inrAmount = btc * currentRate; // Convert BTC to INR
+    const convenienceFee = inrAmount * 0.15; // 15% fee
+    const afterFeeAmount = inrAmount - convenienceFee; // Final amount after fee
+
+    return {
+      original: `₹ ${inrAmount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      fee: `₹ ${convenienceFee.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      afterFee: `₹ ${afterFeeAmount.toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    };
   },
 };

@@ -9,7 +9,7 @@ import RevenuePage from "../RevenuePage/RevenuePage";
 
 function HomePage() {
   const [tabName, setTabName] = useState("dashboard");
-
+  const [f2PollAlData, setF2PoolAllData] = useState();
   return (
     <>
       {/* BTC Rate Display */}
@@ -49,11 +49,13 @@ function HomePage() {
       </div>
 
       {/* Render Pages Based on Selected Tab */}
-      {tabName === "dashboard" && <DashboardPage />}
+      {tabName === "dashboard" && (
+        <DashboardPage setF2PoolAllData={setF2PoolAllData} />
+      )}
       {tabName === "settings" && <SettingsPage />}
-      {tabName === "revenue" && <RevenuePage />}
+      {tabName === "revenue" && <RevenuePage f2PollAlData={f2PollAlData} />}
       {tabName === "wallet" && <WalletPage />}
-      {tabName === "profile" && <ProfilePage />}
+      {tabName === "profile" && <ProfilePage f2PollAlData={f2PollAlData} />}
     </>
   );
 }

@@ -1,9 +1,18 @@
 import React from "react";
-import { FaUserCircle, FaCog } from "react-icons/fa";
+import { FaUserCircle, FaCog, FaPowerOff } from "react-icons/fa";
 import { MdQrCodeScanner } from "react-icons/md";
 import Button from "../CustomPage/Button";
+import { useNavigate } from "react-router-dom";
 
-function ProfilePage() {
+function ProfilePage({ f2PollAlData }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    console.log("LogOut Call");
+    localStorage.clear();
+    navigate("/login");
+  };
+
   const user = {
     name: "KRISHNA KUMAR GAUTAM",
     email: "krishna@example.com",
@@ -25,6 +34,10 @@ function ProfilePage() {
         <div className="flex items-center gap-4">
           <FaCog className="text-gray-400 text-xl" />
           <MdQrCodeScanner className="text-yellow-500 text-xl" />
+          <FaPowerOff
+            className="text-red-500 text-xl"
+            onClick={() => handleLogout()}
+          />
         </div>
       </div>
 

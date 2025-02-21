@@ -1,81 +1,146 @@
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaPowerOff } from "react-icons/fa";
 import { IoWalletOutline } from "react-icons/io5";
 import { MdQrCodeScanner } from "react-icons/md";
 import Button from "../CustomPage/Button";
 import { PiHandDeposit, PiHandWithdraw } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
+import { ApiConstant } from "../../ApiConstant/ApiConstant";
+import CustomLoader from "../CustomPage/CustomLoader";
 
-function DashboardPage() {
-  const [btc, setBtc] = useState(0.00025544);
+function DashboardPage({ setF2PoolAllData }) {
+  const navigate = useNavigate();
+  const [totalbtc, setTotalBtc] = useState(null);
   const [currentBtcRate, setCurrentBtcRate] = useState(null);
   const [afterCommissionBtcRate, setAfterCommissionBtcRate] = useState(null);
   const [commissionRate, setCommissionRate] = useState(null);
+  const [f2poolData, setF2poolData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [userName, setUserName] = useState("");
+  const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    const fetchBtcRate = async () => {
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=inr"
-        );
-        const data = await response.json();
-        const btcRate = data.bitcoin.inr;
+    const token = localStorage.getItem("token");
+    const user_name = localStorage.getItem("user_name");
+    setApiKey(token);
+    setUserName(user_name);
+  }, []);
 
-        // Save the rate to local storage with a timestamp
-        const newData = { btcRate, timestamp: Date.now() };
-        localStorage.setItem("btcRateData", JSON.stringify(newData));
+  const handleLogout = () => {
+    console.log("Logout Call");
+    localStorage.clear();
+    navigate("/login");
+  };
 
-        setCurrentBtcRate(btcRate);
-      } catch (error) {
-        console.error("Error fetching BTC rate:", error);
+  const fetchBtcRate = async () => {
+    try {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=inr"
+      );
+      const data = await response.json();
+      const btcRate = data.bitcoin.inr;
+
+      // Save to local storage with timestamp
+      const newData = { btcRate, timestamp: Date.now() };
+      localStorage.setItem("btcRateData", JSON.stringify(newData));
+
+      setCurrentBtcRate(btcRate);
+    } catch (error) {
+      console.error("Error fetching BTC rate:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${ApiConstant?.f2POOL_BASE_URL}/${userName}/${apiKey}`
+      );
+      setLoading(true);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    };
+      const result = await response.json();
+      setF2poolData(result);
+      // console.log("API Data:", result);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const checkAndUpdateBtcRate = () => {
-      const storedData = localStorage.getItem("btcRateData");
-      if (storedData) {
-        const { btcRate, timestamp } = JSON.parse(storedData);
+  const checkAndFetchData = () => {
+    const storedBtcData = localStorage.getItem("btcRateData");
+    const lastFetchTime = storedBtcData
+      ? JSON.parse(storedBtcData).timestamp
+      : 0;
 
-        // Check if the data is less than 10 minutes old
-        if (Date.now() - timestamp < 10 * 60 * 1000) {
-          setCurrentBtcRate(btcRate);
-          return;
-        }
-      }
-
-      // Fetch new data if not found or outdated
+    if (Date.now() - lastFetchTime >= 10 * 60 * 1000) {
       fetchBtcRate();
-    };
+    } else {
+      // If less than 10 min, use stored BTC rate
+      const btcRate = storedBtcData ? JSON.parse(storedBtcData).btcRate : null;
+      if (btcRate) setCurrentBtcRate(btcRate);
+    }
+  };
 
-    checkAndUpdateBtcRate();
+  useEffect(() => {
+    checkAndFetchData(); // Initial check on mount
 
-    // Set interval to update BTC rate every 10 minutes
+    // Auto-refresh every 10 minutes
     const interval = setInterval(() => {
       fetchBtcRate();
-      window.location.reload(); // Refresh page after 10 min
+      fetchData();
     }, 10 * 60 * 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   useEffect(() => {
-    if (currentBtcRate !== null) {
-      const btcInr = btc * currentBtcRate;
+    if (userName && apiKey) {
+      fetchData();
+    }
+  }, [userName && apiKey]);
+
+  useEffect(() => {
+    if (f2poolData) {
+      // console.log(
+      //   "f2pool data = ",
+      //   f2poolData?.value + f2poolData?.value_today
+      // );
+      setF2PoolAllData(f2poolData);
+      setTotalBtc(f2poolData?.value + f2poolData?.value_today);
+    }
+  }, [f2poolData]);
+
+  useEffect(() => {
+    // console.log("currentBtcRate", currentBtcRate);
+    if (currentBtcRate && totalbtc) {
+      const btcInr = totalbtc * currentBtcRate;
+      // console.log("btc inr", btcInr);
       const commissionRate1 = btcInr * 0.15;
       setCommissionRate(commissionRate1);
       const total = btcInr - commissionRate1;
       setAfterCommissionBtcRate(total);
-      localStorage.setItem("totalBalence", total);
+      localStorage.setItem("totalBalance", total);
     }
-  }, [currentBtcRate]);
+  }, [currentBtcRate && totalbtc]);
 
   return (
     <div className="bg-black text-white min-h-screen p-4">
+      {loading && <CustomLoader />}
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-4">
           <FaBell className="text-gray-400 text-xl" />
           <MdQrCodeScanner className="text-primaryColor text-xl" />
+          <FaPowerOff
+            className="text-red-500 text-xl"
+            onClick={() => handleLogout()}
+          />
         </div>
       </div>
 
@@ -87,7 +152,7 @@ function DashboardPage() {
             ₹ {afterCommissionBtcRate?.toFixed(2)}
           </p>
         </div>
-        <p className="text-gray-500">{btc} BTC</p>
+        <p className="text-gray-500">{totalbtc} BTC</p>
         <div className="flex gap-3 mt-4">
           <Button
             hasIcon
