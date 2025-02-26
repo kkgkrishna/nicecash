@@ -92,12 +92,12 @@ export const Utils = {
     return days;
   },
 
-  convertBtcToInr(btc, currentRate) {
+  convertBtcToInr(btc, currentRate, fee) {
     if (!btc || !currentRate)
       return { original: "₹0.00", fee: "₹0.00", afterFee: "₹0.00" };
 
     const inrAmount = btc * currentRate; // Convert BTC to INR
-    const convenienceFee = inrAmount * 0.15; // 15% fee
+    const convenienceFee = inrAmount * fee;
     const afterFeeAmount = inrAmount - convenienceFee; // Final amount after fee
 
     return {

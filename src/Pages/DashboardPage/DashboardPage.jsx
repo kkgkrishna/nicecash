@@ -111,6 +111,7 @@ function DashboardPage({ setF2PoolAllData }) {
       //   f2poolData?.value + f2poolData?.value_today
       // );
       setF2PoolAllData(f2poolData);
+      console.log("btc",f2poolData?.value, f2poolData?.value_today);
       setTotalBtc(f2poolData?.value + f2poolData?.value_today);
     }
   }, [f2poolData]);
@@ -119,7 +120,7 @@ function DashboardPage({ setF2PoolAllData }) {
     // console.log("currentBtcRate", currentBtcRate);
     if (currentBtcRate && totalbtc) {
       const btcInr = totalbtc * currentBtcRate;
-      // console.log("btc inr", btcInr);
+      console.log("btc inr", totalbtc);
       const commissionRate1 = btcInr * 0.15;
       setCommissionRate(commissionRate1);
       const total = btcInr - commissionRate1;
@@ -129,7 +130,7 @@ function DashboardPage({ setF2PoolAllData }) {
   }, [currentBtcRate && totalbtc]);
 
   return (
-    <div className="bg-black text-white min-h-screen p-4">
+    <div className="bg-black text-white min-h-screen p-4 text-s">
       {loading && <CustomLoader />}
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
@@ -225,14 +226,14 @@ function DashboardPage({ setF2PoolAllData }) {
             </p>
           </div>
           <div className="flex justify-between">
-            <p>After Commission BTC Rate (15%)</p>
+            <p> Commission Rate (15%)</p>
             <p>₹ {commissionRate?.toFixed(2)}</p>
           </div>
         </div>
       </div>
 
       {/* Miner Section */}
-      <div className="bg-gray-900 p-4 rounded-lg mb-4">
+      <div className="bg-gray-900 p-4 rounded-lg mb-16">
         <p className="text-xs text-gray-400">Miners</p>
         <div className="flex flex-col gap-4 mt-4">
           <div className="flex justify-between items-center ">

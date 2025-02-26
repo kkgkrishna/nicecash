@@ -49,7 +49,8 @@ function RevenuePage({ f2PollAlData }) {
                 {
                   Utils?.convertBtcToInr(
                     f2PollAlData?.value + f2PollAlData?.value_today,
-                    currentBtcRate
+                    currentBtcRate,
+                    0.15
                   )?.afterFee
                 }
               </p>
@@ -76,7 +77,8 @@ function RevenuePage({ f2PollAlData }) {
                 {
                   Utils?.convertBtcToInr(
                     f2PollAlData?.value_last_day,
-                    currentBtcRate
+                    currentBtcRate,
+                    0.15
                   )?.afterFee
                 }
               </p>
@@ -93,7 +95,8 @@ function RevenuePage({ f2PollAlData }) {
                 {
                   Utils?.convertBtcToInr(
                     f2PollAlData?.value_today,
-                    currentBtcRate
+                    currentBtcRate,
+                    0.15
                   )?.afterFee
                 }
               </p>
@@ -143,7 +146,10 @@ function RevenuePage({ f2PollAlData }) {
             </div>
             <div className="text-end">
               <p className="text-lg">
-                {Utils?.convertBtcToInr(data?.[2], currentBtcRate)?.afterFee}
+                {
+                  Utils?.convertBtcToInr(data?.[2], currentBtcRate, 0.15)
+                    ?.afterFee
+                }
               </p>
               <p className="text-sm">{data?.[2]} BTC</p>
             </div>

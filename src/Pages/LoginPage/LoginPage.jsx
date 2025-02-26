@@ -43,7 +43,7 @@ const LoginPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950 text-white p-5">
-      <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700">
+      <div className="w-full max-w-md p-4 py-10 space-y-6 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700">
         <div className="flex flex-col items-center">
           <h2 className="text-3xl font-extrabold text-white">NiseCash</h2>
         </div>
