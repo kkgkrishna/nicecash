@@ -119,13 +119,18 @@ function DashboardPage({ setF2PoolAllData }) {
   //   }
   // }, [f2poolData]);
 
+  // useEffect(() => {
+  //   if (f2poolData) {
+  //     const newValue = 0.0023;
+  //     setTotalBtc(newValue);
+  //     localStorage.setItem("totalBtc", newValue.toString());
+  //   }
+  // }, [f2poolData]);
   useEffect(() => {
-    if (f2poolData) {
-      const newValue = 0.0023;
-      setTotalBtc(newValue);
-      localStorage.setItem("totalBtc", newValue.toString());
-    }
-  }, [f2poolData]);
+    const newValue = 0.0023;
+    setTotalBtc(newValue);
+    localStorage.setItem("totalBtc", newValue.toString());
+  }, []);
 
   useEffect(() => {
     const lastUpdate = localStorage.getItem("lastUpdate");
