@@ -34,7 +34,7 @@ function HomePage() {
             tabName === "revenue" ? "text-yellow-500" : "text-gray-400"
           }`}
         /> */}
-        <IoWallet
+        {/* <IoWallet
           onClick={() => setTabName("revenue")}
           className={`${
             tabName === "revenue" ? "text-yellow-500" : "text-gray-400"
@@ -45,7 +45,7 @@ function HomePage() {
           className={`${
             tabName === "profile" ? "text-yellow-500" : "text-gray-400"
           }`}
-        />
+        /> */}
       </div>
 
       {/* Render Pages Based on Selected Tab */}

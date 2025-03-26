@@ -7,7 +7,7 @@ import LoginPage from "../Pages/LoginPage/LoginPage";
 function NicsCashRouter() {
    const navigate = useNavigate();
   const userName = localStorage.getItem("user_name");
-  console.log("userName", userName);
+  // console.log("userName", userName);
   
 
   useEffect(() => {

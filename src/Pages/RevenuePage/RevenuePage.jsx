@@ -23,6 +23,8 @@ function RevenuePage({ f2PollAlData }) {
     setCurrentBtcRate(parsedData.btcRate);
   }, []);
 
+  console.log("f2PollAlData", f2PollAlData);
+
   return (
     <div className="bg-black text-white min-h-screen p-4">
       {/* Header */}
@@ -43,7 +45,7 @@ function RevenuePage({ f2PollAlData }) {
           {/* Total Income */}
 
           <div className="flex flex-col">
-            <p className="text-base mb-2 text-gray-400">Total Income</p>
+            <p className="text-sm mb-2 text-gray-400">Total Income</p>
             <div className="flex flex-col">
               <p className="text-xl font-semibold">
                 {
@@ -55,14 +57,15 @@ function RevenuePage({ f2PollAlData }) {
                 }
               </p>
               <p className="text-sm">
-                {f2PollAlData?.value + f2PollAlData?.value_today} BTC
+                {(f2PollAlData?.value + f2PollAlData?.value_today)?.toFixed(9)}{" "}
+                BTC
               </p>
             </div>
           </div>
 
           {/* Total Payout */}
           <div className="flex flex-col">
-            <p className="text-base mb-2 text-gray-400">Total Payout</p>
+            <p className="text-sm mb-2 text-gray-400">Total Payout</p>
             <div className="flex flex-col">
               <p className="text-xl font-semibold">₹ 0.00</p>
               <p className="text-sm">0.000000 BTC</p>
@@ -71,14 +74,14 @@ function RevenuePage({ f2PollAlData }) {
 
           {/* Balance */}
           <div className="flex flex-col">
-            <p className="text-base mb-2 text-gray-400">Yesterday Revenue</p>
+            <p className="text-sm mb-2 text-gray-400">Yesterday Revenue</p>
             <div className="flex flex-col">
               <p className="text-xl font-semibold">
                 {
                   Utils?.convertBtcToInr(
                     f2PollAlData?.value_last_day,
                     currentBtcRate,
-                    0.15
+                    0
                   )?.afterFee
                 }
               </p>
@@ -89,14 +92,14 @@ function RevenuePage({ f2PollAlData }) {
           {/* Today's Estimated Revenue */}
 
           <div className="flex flex-col">
-            <p className="text-base mb-2 text-gray-400">Today's Est. Revenue</p>
+            <p className="text-sm mb-2 text-gray-400">Today's Est. Revenue</p>
             <div className="flex flex-col">
               <p className="text-xl font-semibold">
                 {
                   Utils?.convertBtcToInr(
                     f2PollAlData?.value_today,
                     currentBtcRate,
-                    0.15
+                    0
                   )?.afterFee
                 }
               </p>
@@ -119,7 +122,7 @@ function RevenuePage({ f2PollAlData }) {
 
       {/* Date wise earning Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-16">
-        <h2 className="text-base  text-gray-400 mb-5">Date Wise Earning</h2>
+        <h2 className="text-sm  text-gray-400 mb-5">Date Wise Earning</h2>
         {f2PollAlData?.payout_history?.map((data, index) => (
           <div
             key={index}
@@ -146,10 +149,7 @@ function RevenuePage({ f2PollAlData }) {
             </div>
             <div className="text-end">
               <p className="text-lg">
-                {
-                  Utils?.convertBtcToInr(data?.[2], currentBtcRate, 0.15)
-                    ?.afterFee
-                }
+                {Utils?.convertBtcToInr(data?.[2], currentBtcRate, 0)?.afterFee}
               </p>
               <p className="text-sm">{data?.[2]} BTC</p>
             </div>

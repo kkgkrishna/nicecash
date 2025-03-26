@@ -80,13 +80,7 @@ export const Utils = {
         monthNames[date.getMonth()]
       }-${date.getFullYear()}`;
 
-      if (date.toDateString() === today.toDateString()) {
-        days.push({ date: "Today", day: dayName });
-      } else if (date.toDateString() === yesterday.toDateString()) {
-        days.push({ date: "Yesterday", day: dayName });
-      } else {
-        days.push({ date: formattedDate, day: dayName });
-      }
+      days.push({ date: formattedDate, day: dayName });
     }
 
     return days;

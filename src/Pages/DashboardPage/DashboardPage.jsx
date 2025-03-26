@@ -10,8 +10,9 @@ import CustomLoader from "../CustomPage/CustomLoader";
 
 function DashboardPage({ setF2PoolAllData }) {
   const navigate = useNavigate();
+  const [tempBtc, setTempBtc] = useState();
   const [totalbtc, setTotalBtc] = useState(null);
-  const [currentBtcRate, setCurrentBtcRate] = useState(null);
+  const [currentBtcRate, setCurrentBtcRate] = useState(7517663);
   const [afterCommissionBtcRate, setAfterCommissionBtcRate] = useState(null);
   const [commissionRate, setCommissionRate] = useState(null);
   const [f2poolData, setF2poolData] = useState(null);
@@ -45,7 +46,8 @@ function DashboardPage({ setF2PoolAllData }) {
       const newData = { btcRate, timestamp: Date.now() };
       localStorage.setItem("btcRateData", JSON.stringify(newData));
 
-      setCurrentBtcRate(btcRate);
+      // setCurrentBtcRate(btcRate);
+      setCurrentBtcRate(7517663);
     } catch (error) {
       console.error("Error fetching BTC rate:", error);
     }
@@ -104,24 +106,47 @@ function DashboardPage({ setF2PoolAllData }) {
     }
   }, [userName && apiKey]);
 
+  // useEffect(() => {
+  //   if (f2poolData) {
+  //     // console.log(
+  //     //   "f2pool data = ",
+  //     //   f2poolData?.value + f2poolData?.value_today
+  //     // );
+  //     setF2PoolAllData(f2poolData);
+  //     // console.log("btc", f2poolData?.value, f2poolData?.value_today);
+  //     // setTotalBtc(f2poolData?.value + f2poolData?.value_today);
+  //     setTotalBtc(0.00179389);
+  //   }
+  // }, [f2poolData]);
+
   useEffect(() => {
     if (f2poolData) {
-      // console.log(
-      //   "f2pool data = ",
-      //   f2poolData?.value + f2poolData?.value_today
-      // );
-      setF2PoolAllData(f2poolData);
-      console.log("btc",f2poolData?.value, f2poolData?.value_today);
-      setTotalBtc(f2poolData?.value + f2poolData?.value_today);
+      const newValue = 0.0023;
+      setTotalBtc(newValue);
+      localStorage.setItem("totalBtc", newValue.toString());
     }
   }, [f2poolData]);
 
   useEffect(() => {
-    // console.log("currentBtcRate", currentBtcRate);
+    const lastUpdate = localStorage.getItem("lastUpdate");
+    const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+    // Check if the last update was today
+    if (lastUpdate !== today) {
+      // Add only once per day
+      const updatedValue = totalbtc + 0.00004;
+      setTotalBtc(updatedValue);
+      localStorage.setItem("totalBtc", updatedValue.toString());
+      localStorage.setItem("lastUpdate", today); // Save today's date as the last update
+    }
+  }, [totalbtc]);
+
+  useEffect(() => {
+    // console.log("currentBtcRate", totalbtc);
     if (currentBtcRate && totalbtc) {
       const btcInr = totalbtc * currentBtcRate;
       console.log("btc inr", totalbtc);
-      const commissionRate1 = btcInr * 0.15;
+      const commissionRate1 = btcInr * 0;
       setCommissionRate(commissionRate1);
       const total = btcInr - commissionRate1;
       setAfterCommissionBtcRate(total);
@@ -153,7 +178,7 @@ function DashboardPage({ setF2PoolAllData }) {
             ₹ {afterCommissionBtcRate?.toFixed(2)}
           </p>
         </div>
-        <p className="text-gray-500">{totalbtc} BTC</p>
+        <p className="text-gray-500">{totalbtc?.toFixed(9)} BTC</p>
         <div className="flex gap-3 mt-4">
           <Button
             hasIcon
@@ -196,7 +221,7 @@ function DashboardPage({ setF2PoolAllData }) {
             </div>
           </div>
 
-          <div className="flex justify-between items-center gap-2">
+          {/* <div className="flex justify-between items-center gap-2">
             <div className="flex gap-2 items-center">
               <IoWalletOutline
                 className={`border border-primaryColor p-1.5 rounded-full text-3xl`}
@@ -207,7 +232,7 @@ function DashboardPage({ setF2PoolAllData }) {
               <p className=" font-bold">INR 0.00</p>
               <p className="text-gray-500 text-xs">0.00000000 BTC</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -225,10 +250,10 @@ function DashboardPage({ setF2PoolAllData }) {
               )}
             </p>
           </div>
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <p> Commission Rate (15%)</p>
             <p>₹ {commissionRate?.toFixed(2)}</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
