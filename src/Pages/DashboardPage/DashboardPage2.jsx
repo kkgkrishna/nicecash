@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ApiConstant } from "../../ApiConstant/ApiConstant";
 import CustomLoader from "../CustomPage/CustomLoader";
 
-function DashboardPage({ setF2PoolAllData }) {
+function DashboardPage2({ setF2PoolAllData }) {
   const navigate = useNavigate();
   const [totalBtc, setTotalBtc] = useState(null);
   const [currentBtcRate, setCurrentBtcRate] = useState(7517663);
@@ -279,4 +279,4 @@ function DashboardPage({ setF2PoolAllData }) {
   );
 }
 
-export default DashboardPage;
+export default DashboardPage2;

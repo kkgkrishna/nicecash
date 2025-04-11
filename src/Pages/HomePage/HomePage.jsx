@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import { IoHome, IoWallet } from "react-icons/io5";
 import ProfilePage from "../ProfilePage/ProfilePage";
-import DashboardPage from "../DashboardPage/DashboardPage";
 import SettingsPage from "../SettingsPage/SettingsPage";
 import WalletPage from "../WalletPage/WalletPage";
 import RevenuePage from "../RevenuePage/RevenuePage";
+import DashboardPage2 from "../DashboardPage/DashboardPage";
 
 function HomePage() {
   const [tabName, setTabName] = useState("dashboard");
@@ -50,7 +50,7 @@ function HomePage() {
 
       {/* Render Pages Based on Selected Tab */}
       {tabName === "dashboard" && (
-        <DashboardPage setF2PoolAllData={setF2PoolAllData} />
+        <DashboardPage2 setF2PoolAllData={setF2PoolAllData} />
       )}
       {tabName === "settings" && <SettingsPage />}
       {tabName === "revenue" && <RevenuePage f2PollAlData={f2PollAlData} />}
