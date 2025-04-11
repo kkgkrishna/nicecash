@@ -192,7 +192,7 @@ function DashboardPage2({ setF2PoolAllData }) {
             <MdQrCodeScanner className="text-primaryColor" />
           </Button>
 
-          <Button
+          <Button 
             hasIcon
             label="Withdraw"
             className="text-xs text-primaryColor border-primaryColor"
