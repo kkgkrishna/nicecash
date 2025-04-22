@@ -5,7 +5,7 @@ import ProfilePage from "../ProfilePage/ProfilePage";
 import SettingsPage from "../SettingsPage/SettingsPage";
 import WalletPage from "../WalletPage/WalletPage";
 import RevenuePage from "../RevenuePage/RevenuePage";
-import DashboardPage2 from "../DashboardPage/DashboardPage";
+import DashboardPage2 from "../DashboardPage/DashboardPage2";
 
 function HomePage() {
   const [tabName, setTabName] = useState("dashboard");

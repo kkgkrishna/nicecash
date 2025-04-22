@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaBell, FaPowerOff } from "react-icons/fa";
+import { FaBell } from "react-icons/fa";
 import { IoWalletOutline } from "react-icons/io5";
 import { MdQrCodeScanner } from "react-icons/md";
 import Button from "../CustomPage/Button";
@@ -11,7 +11,7 @@ import CustomLoader from "../CustomPage/CustomLoader";
 function DashboardPage2({ setF2PoolAllData }) {
   const navigate = useNavigate();
   const [totalBtc, setTotalBtc] = useState(null);
-  const [currentBtcRate, setCurrentBtcRate] = useState(7517663);
+  const [currentBtcRate, setCurrentBtcRate] = useState();
   const [afterCommissionBtcRate, setAfterCommissionBtcRate] = useState(null);
   const [commissionRate, setCommissionRate] = useState(null);
   const [f2poolData, setF2poolData] = useState(null);
@@ -28,7 +28,6 @@ function DashboardPage2({ setF2PoolAllData }) {
   }, []);
 
   const handleLogout = () => {
-    console.log("Logout Call");
     localStorage.clear();
     navigate("/login");
   };
@@ -40,13 +39,11 @@ function DashboardPage2({ setF2PoolAllData }) {
       );
       const data = await response.json();
       const btcRate = data.bitcoin.inr;
-
-      // Save to local storage with timestamp
-      const newData = { btcRate, timestamp: Date.now() };
-      localStorage.setItem("btcRateData", JSON.stringify(newData));
-
-      // setCurrentBtcRate(btcRate);
-      setCurrentBtcRate(7517663);
+      localStorage.setItem(
+        "btcRateData",
+        JSON.stringify({ btcRate, timestamp: Date.now() })
+      );
+      setCurrentBtcRate(btcRate);
     } catch (error) {
       console.error("Error fetching BTC rate:", error);
     }
@@ -54,20 +51,17 @@ function DashboardPage2({ setF2PoolAllData }) {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
         `${ApiConstant?.f2POOL_BASE_URL}/${userName}/${apiKey}`
       );
-      setLoading(true);
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
+      if (!response.ok) throw new Error("Failed to fetch data");
       const result = await response.json();
       setF2poolData(result);
-      // console.log("API Data:", result);
+      setF2PoolAllData(result);
       setLoading(false);
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -81,100 +75,78 @@ function DashboardPage2({ setF2PoolAllData }) {
     if (Date.now() - lastFetchTime >= 10 * 60 * 1000) {
       fetchBtcRate();
     } else {
-      // If less than 10 min, use stored BTC rate
       const btcRate = storedBtcData ? JSON.parse(storedBtcData).btcRate : null;
       if (btcRate) setCurrentBtcRate(btcRate);
     }
   };
 
+  // ✅ BTC +0.000000000643 per second with console log
   useEffect(() => {
-    checkAndFetchData(); // Initial check on mount
+    const oneSec = 1000;
+    const incrementPerSecond = 0.000000000643;
 
-    // Auto-refresh every 10 minutes
+    let storedBtc = parseFloat(localStorage.getItem("totalBtc"));
+    if (isNaN(storedBtc)) {
+      storedBtc = 0.002782091246;
+      localStorage.setItem("totalBtc", storedBtc.toString());
+    }
+
+    setTotalBtc(storedBtc);
+    console.log(
+      `[Init ${new Date().toLocaleTimeString()}] totalBtc: ${storedBtc}`
+    );
+
+    const interval = setInterval(() => {
+      setTotalBtc((prev) => {
+        const newVal = parseFloat((prev + incrementPerSecond)?.toFixed(12));
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`[${timestamp}] Updated totalBtc: ${newVal}`);
+        localStorage.setItem("totalBtc", newVal.toString());
+        return newVal;
+      });
+    }, oneSec);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (currentBtcRate && totalBtc) {
+      const btcInr = totalBtc * currentBtcRate;
+      const commission = btcInr * 0;
+      setCommissionRate(commission);
+      const totalInr = btcInr - commission;
+      setAfterCommissionBtcRate(totalInr);
+      localStorage.setItem("totalBalance", totalInr.toString());
+    }
+  }, [currentBtcRate, totalBtc]);
+
+  useEffect(() => {
+    checkAndFetchData();
     const interval = setInterval(() => {
       fetchBtcRate();
       fetchData();
     }, 10 * 60 * 1000);
-
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     if (userName && apiKey) {
       fetchData();
     }
-  }, [userName && apiKey]);
-
-  // useEffect(() => {
-  //   if (f2poolData) {
-  //     // console.log(
-  //     //   "f2pool data = ",
-  //     //   f2poolData?.value + f2poolData?.value_today
-  //     // );
-  //     setF2PoolAllData(f2poolData);
-  //     // console.log("btc", f2poolData?.value, f2poolData?.value_today);
-  //     // setTotalBtc(f2poolData?.value + f2poolData?.value_today);
-  //     setTotalBtc(0.00179389);
-  //   }
-  // }, [f2poolData]);
-
-  // useEffect(() => {
-  //   if (f2poolData) {
-  //     const newValue = 0.0023;
-  //     setTotalBtc(newValue);
-  //     localStorage.setItem("totalBtc", newValue.toString());
-  //   }
-  // }, [f2poolData]);
-  useEffect(() => {
-    const newValue = 0.0023;
-    setTotalBtc(newValue);
-    localStorage.setItem("totalBtc", newValue.toString());
-  }, []);
-
-  useEffect(() => {
-    const lastUpdate = localStorage.getItem("lastUpdate");
-    const currentTime = new Date().getTime();
-    const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
-
-    if (!lastUpdate || currentTime - parseInt(lastUpdate) >= oneHour) {
-      // Increase by 0.0000017 only once per hour
-      const updatedValue = totalBtc + 0.0000017;
-      setTotalBtc(updatedValue);
-      localStorage.setItem("totalBtc", updatedValue.toString());
-      localStorage.setItem("lastUpdate", currentTime.toString());
-    }
-  }, [totalBtc]);
-
-  useEffect(() => {
-    // console.log("currentBtcRate", totalbtc);
-    if (currentBtcRate && totalBtc) {
-      const btcInr = totalBtc * currentBtcRate;
-      console.log("btc inr", totalBtc);
-      const commissionRate1 = btcInr * 0;
-      setCommissionRate(commissionRate1);
-      const total = btcInr - commissionRate1;
-      setAfterCommissionBtcRate(total);
-      localStorage.setItem("totalBalance", total);
-    }
-  }, [currentBtcRate && totalBtc]);
+  }, [userName, apiKey]);
 
   return (
     <div className="bg-black text-white min-h-screen p-4 text-s">
       {loading && <CustomLoader />}
-      {/* Header */}
+
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex items-center gap-4">
           <FaBell className="text-gray-400 text-xl" />
           <MdQrCodeScanner className="text-primaryColor text-xl" />
-          {/* <FaPowerOff
-            className="text-red-500 text-xl"
-            onClick={() => handleLogout()}
-          /> */}
         </div>
       </div>
 
-      {/* Wallet Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-4">
         <h2 className="text-xs text-gray-400 mb-5">Total Assets</h2>
         <div className="flex items-end">
@@ -182,7 +154,7 @@ function DashboardPage2({ setF2PoolAllData }) {
             ₹ {afterCommissionBtcRate?.toFixed(2)}
           </p>
         </div>
-        <p className="text-gray-500">{totalBtc?.toFixed(9)} BTC</p>
+        <p className="text-gray-500">{totalBtc?.toFixed(12)} BTC</p>
         <div className="flex gap-3 mt-4">
           <Button
             hasIcon
@@ -191,15 +163,13 @@ function DashboardPage2({ setF2PoolAllData }) {
           >
             <MdQrCodeScanner className="text-primaryColor" />
           </Button>
-
-          <Button 
+          <Button
             hasIcon
             label="Withdraw"
             className="text-xs text-primaryColor border-primaryColor"
           >
             <PiHandDeposit className="text-primaryColor" />
           </Button>
-
           <Button
             hasIcon
             label="Deposit"
@@ -210,8 +180,7 @@ function DashboardPage2({ setF2PoolAllData }) {
         </div>
       </div>
 
-      {/* Balance Section */}
-      <div className="bg-gray-900 p-4 rounded-lg mb-4">
+      {/* <div className="bg-gray-900 p-4 rounded-lg mb-4">
         <p className="text-xs text-gray-400 ">Balance</p>
         <div className="flex flex-col gap-5 mt-4">
           <div className="flex justify-between items-center gap-2">
@@ -224,23 +193,9 @@ function DashboardPage2({ setF2PoolAllData }) {
               <p className="text-gray-500 text-xs">0.00000000 BTC</p>
             </div>
           </div>
-
-          {/* <div className="flex justify-between items-center gap-2">
-            <div className="flex gap-2 items-center">
-              <IoWalletOutline
-                className={`border border-primaryColor p-1.5 rounded-full text-3xl`}
-              />
-              <p className=""> Pending Balance</p>
-            </div>
-            <div className="text-end">
-              <p className=" font-bold">INR 0.00</p>
-              <p className="text-gray-500 text-xs">0.00000000 BTC</p>
-            </div>
-          </div> */}
         </div>
-      </div>
+      </div> */}
 
-      {/* BTC Rate Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-4">
         <h2 className="text-xs text-gray-400 mb-5">BTC Rate</h2>
         <div className="flex flex-col gap-4">
@@ -248,30 +203,25 @@ function DashboardPage2({ setF2PoolAllData }) {
             <p>Current BTC Rate</p>
             <p>
               {currentBtcRate !== null ? (
-                <span>₹ {currentBtcRate.toFixed(2)}</span>
+                <span>₹ {currentBtcRate?.toFixed(2)}</span>
               ) : (
                 <span>Loading BTC rate...</span>
               )}
             </p>
           </div>
-          {/* <div className="flex justify-between">
-            <p> Commission Rate (15%)</p>
-            <p>₹ {commissionRate?.toFixed(2)}</p>
-          </div> */}
         </div>
       </div>
 
-      {/* Miner Section */}
       <div className="bg-gray-900 p-4 rounded-lg mb-16">
         <p className="text-xs text-gray-400">Miners</p>
         <div className="flex flex-col gap-4 mt-4">
-          <div className="flex justify-between items-center ">
-            <p className=""> Online </p>
-            <p className="">2</p>
+          <div className="flex justify-between items-center">
+            <p>Online</p>
+            <p>2</p>
           </div>
-          <div className="flex justify-between items-center ">
-            <p className=""> Offline </p>
-            <p className="">0</p>
+          <div className="flex justify-between items-center">
+            <p>Offline</p>
+            <p>0</p>
           </div>
         </div>
       </div>
