@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaPowerOff } from "react-icons/fa";
 import { IoWalletOutline } from "react-icons/io5";
 import { MdQrCodeScanner } from "react-icons/md";
 import Button from "../CustomPage/Button";
@@ -144,6 +144,10 @@ function DashboardPage2({ setF2PoolAllData }) {
         <div className="flex items-center gap-4">
           <FaBell className="text-gray-400 text-xl" />
           <MdQrCodeScanner className="text-primaryColor text-xl" />
+          <FaPowerOff
+            className="text-red-400 text-xl"
+            onClick={() => handleLogout()}
+          />
         </div>
       </div>
 
