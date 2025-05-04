@@ -87,7 +87,7 @@ function DashboardPage2({ setF2PoolAllData }) {
 
     let storedBtc = parseFloat(localStorage.getItem("totalBtc"));
     if (isNaN(storedBtc)) {
-      storedBtc = 0.0028;
+      storedBtc = 0.0030;
       localStorage.setItem("totalBtc", storedBtc.toString());
     }
 
